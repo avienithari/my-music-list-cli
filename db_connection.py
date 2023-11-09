@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import mysql.connector
 from mysql.connector import Error
 import sql
-import queries
 
 
 def create_server_connection(host_name, user_name, user_password):
@@ -39,10 +38,10 @@ def connection():
 
     if not db_connection:
         server_connection = create_server_connection('localhost', 'root', pw)
-        sql.create_database(server_connection, queries.create_database)
+        sql.create_database(server_connection, sql.create_database)
         db_connection = create_db_connection('localhost', 'root', pw, db)
-        sql.execute_query(db_connection, queries.create_planning_table)
-        sql.execute_query(db_connection, queries.create_completed_table)
+        sql.execute_query(db_connection, sql.create_planning_table)
+        sql.execute_query(db_connection, sql.create_completed_table)
         print('Established connection with MyMusicList database and created necessery tables.')
 
     return db_connection

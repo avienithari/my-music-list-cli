@@ -3,15 +3,14 @@ import db_connection as db
 import pandas as pd
 from tabulate import tabulate
 import random as rd
-import queries
 
 print('Welcome to MyMusicList\nType l for list, r for random, s for search or enter to quit. ')
 
 def search_mode(db_connection):
     band_name = input('Please enter band name: ')
     print(f'Looking for {band_name.title()}')
-    planning_table = sql.read_query(db_connection, queries.read_planning)
-    completed_table = sql.read_query(db_connection, queries.read_completed)
+    planning_table = sql.read_query(db_connection, sql.read_planning)
+    completed_table = sql.read_query(db_connection, sql.read_completed)
     planning_counter = 0
     completed_counter = 0
 
@@ -64,8 +63,8 @@ def random_mode(db_connection):
         main()
         
 def list_mode(db_connection):
-    planning_results = sql.read_query(db_connection, queries.read_planning)
-    completed_results = sql.read_query(db_connection, queries.read_completed)
+    planning_results = sql.read_query(db_connection, sql.read_planning)
+    completed_results = sql.read_query(db_connection, sql.read_completed)
     planning_table = []
     completed_table = []
 
@@ -100,7 +99,7 @@ def move_band(band_name, band_index, db_connection):
     move_band = input(f'Move {band_name.title()} from Planning to Completed? y/N: ')
 
     try:
-        last = sql.read_query(db_connection, queries.read_last_element_completed)[0][0]
+        last = sql.read_query(db_connection, sql.read_last_element_completed)[0][0]
     except IndexError:
         last = 0
 
@@ -120,7 +119,7 @@ def root(db_connection):
     command = input('\nroot> ')
 
     if command.lower() == 'populate': 
-        sql.execute_query(db_connection, queries.populate)
+        sql.execute_query(db_connection, sql.populate)
         print('Populated tables')
         root(db_connection)
 
@@ -138,16 +137,16 @@ def root(db_connection):
         warning = input('Are you sure you want to proceed? y/N:')
 
         if warning.lower() == 'y':
-            sql.execute_query(db_connection, queries.drop_table_completed)
-            sql.execute_query(db_connection, queries.drop_table_planning)
+            sql.execute_query(db_connection, sql.drop_table_completed)
+            sql.execute_query(db_connection, sql.drop_table_planning)
             print('Dropped tables.')
             print('NOTE: You ought to create tables via setup command after dropping so program can work properly.')
 
         root(db_connection)
 
     elif command.lower() == 'setup':
-        sql.execute_query(db_connection, queries.create_planning_table)
-        sql.execute_query(db_connection, queries.create_completed_table)
+        sql.execute_query(db_connection, sql.create_planning_table)
+        sql.execute_query(db_connection, sql.create_completed_table)
         print('Created Planning and Completed tables.')
         root(db_connection)
 
