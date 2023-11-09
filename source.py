@@ -109,12 +109,7 @@ def move_band(band_name, band_index, db_connection):
 def root(db_connection):
     command = input('\nroot> ')
 
-    if command.lower() == 'populate': 
-        sql.execute_query(db_connection, sql.populate)
-        print('Populated tables')
-        root(db_connection)
-
-    elif command.lower() == 'delete':
+    if command.lower() == 'delete':
         table = input('From which table?: ')
         delete_band = input('Which band?: ')
         delete = f"""
@@ -125,7 +120,7 @@ def root(db_connection):
         root(db_connection)
 
     elif command.lower() == 'drop':
-        warning = input('Are you sure you want to proceed? y/N:')
+        warning = input('Are you sure you want to proceed? y/N: ')
 
         if warning.lower() == 'y':
             sql.execute_query(db_connection, sql.drop_table_completed)
@@ -142,14 +137,27 @@ def root(db_connection):
         root(db_connection)
 
     elif command.lower() == 'backup':
-        sql.backup(table_name='Planning', file_name='planning_backup.csv')
-        sql.backup(table_name='Completed', file_name='completed_backup.csv')
+        with open('planning_backup.csv', 'w', newline='') as csv_file:
+            planning_rows = sql.read_query(db_connection, sql.read_planning)
+            for row in planning_rows:
+                csv_file.write(','.join(str(value) for value in row) + '\n')
+            
+            print(f'{str(len(planning_rows))} Planning elements backuped.')
+
+        with open('completed_backup.csv', 'w', newline='') as csv_file:
+            completed_rows = sql.read_query(db_connection, sql.read_completed)
+            for row in completed_rows:
+                csv_file.write(','.join(str(value) for value in row) + '\n')
+
+            print(f'{str(len(completed_rows))} Completed elements backuped.')
+
         root(db_connection)
 
     elif command.lower() == 'restore':
-        sql.restore(table_name='Planning', file_name='planning_backup.csv')
-        # sql.restore(table_name='Completed', file_name='completed_backup.csv')
-        pass
+        sql.execute_query(db_connection, sql.restore_planning)
+        sql.execute_query(db_connection, sql.restore_completed)
+        print(f'Restored data from file.')
+        root(db_connection)
 
     elif command.lower() == '':
         pass
