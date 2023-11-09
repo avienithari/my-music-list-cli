@@ -1,6 +1,5 @@
 import os
 from mysql.connector import Error
-import queries
 
 
 cwd = os.getcwd()
@@ -107,5 +106,5 @@ def backup(table_name, file_name):
         print(str(len(rows)) + f' {table_name} elements backuped.')
 
 def restore(table_name, file_name):
-    execute_query(connection, queries.restore)
+    execute_query(connection, restore.query)
 
