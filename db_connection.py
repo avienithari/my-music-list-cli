@@ -32,14 +32,16 @@ def create_db_connection(host_name, user_name, user_password, db_name):
 
 def connection():
     load_dotenv('.env')
+    host_name = os.getenv('HOSTNAME')
+    user_name = os.getenv('USERNAME')
     db = 'MyMusicList'
     pw = os.getenv('PASSWORD')
-    db_connection = create_db_connection('localhost', 'root', pw, db)
+    db_connection = create_db_connection(host_name, user_name, pw, db)
 
     if not db_connection:
-        server_connection = create_server_connection('localhost', 'root', pw)
+        server_connection = create_server_connection(host_name, user_name, pw)
         sql.create_database(server_connection, sql.create_database)
-        db_connection = create_db_connection('localhost', 'root', pw, db)
+        db_connection = create_db_connection(host_name, user_name, pw, db)
         sql.execute_query(db_connection, sql.create_planning_table)
         sql.execute_query(db_connection, sql.create_completed_table)
         print('Established connection with MyMusicList database and created necessery tables.')
